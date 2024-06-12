@@ -5,8 +5,9 @@
     <H4>Primeira Divisão</H4>
     {{ nome }}
   <div v-for="time in times">
-    
-  <ul>
+    <card :person=""></card>
+
+    <ul>
     <li>Time: {{ time.team.name }}</li>
     <li>Pontos: {{ time.stats[3].value }}</li>
     <li>Gols Sofridos: {{ time.stats[4].value }}</li>
@@ -36,6 +37,9 @@
     },
     created() {
       this.getPeople()
+    },
+    components: {
+      Card 
     }
   }).mount('#app')
 </script>
