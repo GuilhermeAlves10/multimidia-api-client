@@ -1,0 +1,43 @@
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<link rel="stylesheet" href="styles.css">
+
+<div id="app">
+    <h1>Lion Technologia</h1>
+    
+    {{ nome }}
+    <div id="app">
+      <h1>Lion Technologia</h1>
+      
+      <div v-for="tech in techs" :key="tech.id">
+          <ul>
+              <li>Tecnologia: {{ tech.nome_tecnologia }}</li>
+              <li>Versão: {{ tech.versao }}</li>
+              <li>Data de Lançamento: {{ tech.data_lancamento }}</li>
+              <li>Popularidade: {{ tech.popular }}</li>
+          </ul>
+      </div>
+  </div>
+
+<script type="module">
+  const { createApp } = Vue
+
+  const API_URL = 'http://localhost:3333/tech'
+
+  createApp({
+    data() {
+      return {
+        techs: []
+      }
+    },
+    methods: {
+      async fetchTechs() {
+        const response = await fetch(API_URL)
+        const data = await response.json()
+        this.techs = data
+      }
+    },
+    created() {
+      this.fetchTechs()
+    }
+  }).mount('#app')
+</script>
