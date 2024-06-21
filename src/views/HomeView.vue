@@ -1,14 +1,42 @@
 <template>
-  <div>
-    <h1>LA LIGA</h1>
-    <H4>Primeira Divisão</H4>
-  
-    <div v-for="time in times" :key="time.id">
+  <div id="app">
+    <div class="header">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTm8MfAf99Ncc-HZQm95_W1euKDFhCrLWOvkw&s" alt="La Liga Logo" class="la-liga-logo">
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Logo</th>
+            <th>Time</th>
+            <th>PTS</th>
+            <th>J</th>
+            <th>CA</th>
+            <th>GF</th>
+            <th>GA</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(time, index) in times" :key="time.team.id" :class="getRowClass(index)">
+            <td class="logo-cell"><img :src="time.team.logos[0].href" alt="Logo" class="team-logo"></td>
+            <td>{{ time.team.name }}</td>
+            <td>{{ time.stats[3].value }}</td>
+            <td>{{ time.stats[0].value }}</td>
+            <td>{{ time.stats[6].value }}</td>
+            <td>{{ time.stats[5].value }}</td>
+            <td>{{ time.stats[4].value }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="legend">
+      <h3>Legenda</h3>
       <ul>
-        <li>Time: {{ time.team.name }}</li>
-        <li>Pontos: {{ time.stats[3].value }}</li>
-        <li>Gols Sofridos: {{ time.stats[4].value }}</li>
-        <li>Gols Feitos: {{ time.stats[5].value }}</li>
+        <li><span class="color-box champions-league"></span> Liga dos Campeões</li>
+        <li><span class="color-box europa-league"></span> Liga Europa</li>
+        <li><span class="color-box mid-table"></span> Meio da Tabela</li>
+        <li><span class="color-box relegation"></span> Rebaixamento</li>
       </ul>
     </div>
   </div>
@@ -17,7 +45,7 @@
 <script>
 const API_URL = `http://api-football-standings.azharimm.dev/leagues/esp.1/standings?season=2023&sort=asc/`
 
-export default{
+export default {
   data() {
     return {
       times: []
@@ -29,6 +57,12 @@ export default{
       const data = await response.json()
       this.times = data.data.standings
       console.log(data)
+    },
+    getRowClass(index) {
+      if (index < 4) return 'champions-league';
+      if (index >= 4 && index < 7) return 'europa-league';
+      if (index >= this.times.length - 3) return 'relegation';
+      return 'mid-table';
     }
   },
   created() {
@@ -42,74 +76,126 @@ body, html {
   height: 100%;
   margin: 0;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+  background-color: #ffffff;
 }
 
 #app {
   text-align: center;
+  width: 100%;
+  max-width: 1200px;
 }
 
-h1 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
-  color: #333;
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
-ul {
+.la-liga-logo {
+  width: 150px;
+  height: 150px;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px; /* Diminuir a margem superior */
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #000000;
+  text-align: left;
+  min-width: 80px;
+}
+
+th {
+  background-color: #f2250a;
+}
+
+tr:nth-child(even) {
+  background-color: #ffffff;
+}
+
+tr:hover {
+  background-color: #ffffff;
+}
+
+.team-logo {
+  width: 30px;
+  height: 30px;
+}
+
+.logo-cell {
+  border-left-width: 5px;
+  border-left-style: solid;
+}
+
+.champions-league .logo-cell {
+  border-left-color: blue;
+}
+
+.europa-league .logo-cell {
+  border-left-color: rgb(255, 153, 0);
+}
+
+.relegation .logo-cell {
+  border-left-color: red;
+}
+
+.mid-table .logo-cell {
+  border-left-color: green;
+}
+
+.legend {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.legend h3 {
+  margin-bottom: 10px;
+}
+
+.legend ul {
   list-style-type: none;
   padding: 0;
 }
 
-ul li {
-  background: #fff;
-  margin: 10px 0;
-  padding: 15px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  text-align: left;
+.legend li {
   display: flex;
   align-items: center;
+  margin: 5px 0;
 }
 
-ul li img {
-  width: 30px;
-  height: 30px;
-  margin-right: 15px;
-  border-radius: 3px;
+.color-box {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  margin-right: 10px;
 }
 
-div {
-  background: #e8e8e8;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+.color-box.champions-league {
+  background-color: blue;
 }
 
-li:nth-child(odd) {
-  background: #f9f9f9;
+.color-box.europa-league {
+  background-color: rgb(255, 166, 0);
 }
 
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+.color-box.relegation {
+  background-color: red;
 }
 
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+.color-box.mid-table {
+  background-color: green;
 }
 </style>
